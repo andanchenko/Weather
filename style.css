@@ -1,0 +1,9 @@
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 1rem;
+  }
+.weather{
+    grid-column-start: 1;
+    grid-column-end: -1;
+}
