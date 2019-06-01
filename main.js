@@ -1,18 +1,20 @@
 window.addEventListener("load", function(){
-var usd=document.querySelector('.usd');
-var eur=document.querySelector('.eur');
-var rub=document.querySelector('.rub');
-var defaultCity=document.querySelector('.defaultCity');
-var rateArr=[];
-var xhttp=new XMLHttpRequest();
-var defaultWeathet={};
-var lat, lon;
+let exchangeRate=document.querySelector('.exchangeRate');
+let defaultCity=document.querySelector('.defaultCity');
+let rateArr=[];
+let xhttp=new XMLHttpRequest();
+let defaultWeathet={};
+let lat, lon;
 
 class ViewExchangeRate{
     showRate(rateArr){
-        usd.innerHTML=rateArr[0].buy;
-        eur.innerHTML=rateArr[1].buy;
-        rub.innerHTML=rateArr[2].buy;
+      exchangeRate.innerHTML='<h3>Exchange rate</h3>';
+      for(let i=0;i<rateArr.length;i++){
+        let p=document.createElement('p');
+        p.innerText=
+        `${rateArr[i].ccy}: buy - ${rateArr[i].buy}UAH, sale - ${rateArr[i].sale}UAH`;
+        exchangeRate.appendChild(p);
+      }
     }
  }
  class ViewDefaultWeathet{
@@ -62,11 +64,11 @@ class ModelExchangeRate{
   constructor(view){
       this.view=view;
   }
-  getCity(getVal){
-      function success(position, getVal) {
+  getCity(){
+      function success(position) {
           lat = position.coords.latitude.toFixed(2);
           lon = position.coords.longitude.toFixed(2);
-          modelDefaultWeathet.getVal();
+          modelDefaultWeathet.getWeathet(viewDefaultWeathet);
       };
        
       function error(obj) {
@@ -74,9 +76,9 @@ class ModelExchangeRate{
       };
       navigator.geolocation.getCurrentPosition(success, error);
   }
-  getVal(){
-      var XHR = ("onload" in new XMLHttpRequest()) ? XMLHttpRequest : XDomainRequest; 
-      var xhr = new XHR(); 
+  getWeathet(){
+      let XHR = ("onload" in new XMLHttpRequest()) ? XMLHttpRequest : XDomainRequest; 
+      let xhr = new XHR(); 
       xhr.open('GET', `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=694e5f0d692f8622e5ca576e4bcce755`, true); 
       xhr.onload = function() { 
           defaultWeathet=JSON.parse(xhr.response); 
@@ -98,18 +100,18 @@ class ModelExchangeRate{
     }
     makeExchangeRate(){
         modelExchangeRate.getVal();
-        window.setInterval(modelExchangeRate.getVal,36000);   
+        window.setInterval(modelExchangeRate.getVal,3600000);   
     }
     makeDefaultWeathet(){
       modelDefaultWeathet.getCity(modelDefaultWeathet.getVal);
     }
  
  }
-  var viewExchangeRate = new ViewExchangeRate;
-  var modelExchangeRate=new ModelExchangeRate(viewExchangeRate);
-  var viewDefaultWeathet = new ViewDefaultWeathet;
-  var modelDefaultWeathet=new ModelDefaultWeathet(viewDefaultWeathet);
-  var controller = new Controller(modelExchangeRate,modelDefaultWeathet);
+  let viewExchangeRate = new ViewExchangeRate;
+  let modelExchangeRate=new ModelExchangeRate(viewExchangeRate);
+  let viewDefaultWeathet = new ViewDefaultWeathet;
+  let modelDefaultWeathet=new ModelDefaultWeathet(viewDefaultWeathet);
+  let controller = new Controller(modelExchangeRate,modelDefaultWeathet);
   controller.makeExchangeRate();
   controller.makeDefaultWeathet();
 });
