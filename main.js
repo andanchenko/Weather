@@ -21,7 +21,7 @@ window.addEventListener("load", function(){
       let cell5=document.createElement('td');
       cell1.innerText=citiesInfo[0];
       cell2.innerText=citiesInfo[1];
-      cell3.innerText=citiesInfo[2];
+      cell3.innerText=(citiesInfo[2]-273.15).toFixed(2);
       cell4.innerText=citiesInfo[3];
       cell5.innerHTML=`<button class='${citiesInfo[0]}'>Delete</button>`;
       selectedCities.appendChild(row);
@@ -39,7 +39,7 @@ window.addEventListener("load", function(){
       for(let i=0;i<rateArr.length;i++){
         let p=document.createElement('p');
         p.innerText=
-        `${rateArr[i].ccy}: buy - ${rateArr[i].buy}UAH, sale - ${rateArr[i].sale}UAH`;
+        `${rateArr[i].ccy}: buy - ${rateArr[i].buy} UAH, sale - ${rateArr[i].sale} UAH`;
         exchangeRate.appendChild(p);
       }
     }
@@ -53,7 +53,7 @@ window.addEventListener("load", function(){
       let clouds=document.createElement('p');
       city.innerText=`Weathet in ${defaultWeathet.name} is:`;
       weatherDesc.innerText=
-      `${defaultWeathet.weather[0].description} air temperature is ${defaultWeathet.main.temp} K`;
+      `${defaultWeathet.weather[0].description} air temperature is ${(defaultWeathet.main.temp-273.15).toFixed(2)} ℃`;
       pressure.innerText=`pressure is ${defaultWeathet.main.pressure} Pa`;
       humidity.innerText=`humidity is ${defaultWeathet.main.humidity} %`;
       clouds.innerText=`clouds is ${defaultWeathet.clouds.all}%`
@@ -119,7 +119,7 @@ window.addEventListener("load", function(){
       selectedCities.innerHTML=`<tr>
         <th>City</th>
         <th>Description</th>
-        <th>Air temperature, K</th>
+        <th>Air temperature, ℃</th>
         <th>Clouds, %</th>
         <th></th>
       </tr>`
@@ -134,7 +134,9 @@ window.addEventListener("load", function(){
                 weatherArray.weather[0].description,
                 weatherArray.main.temp,
                 weatherArray.clouds.all];
-              return citiesInfo
+              citiesArrey[i]=citiesInfo;
+              localStorage.setItem('myCities', JSON.stringify(citiesArrey));
+              return citiesInfo;
             })
             .then(citiesInfo => viewSelectedCities.sow(citiesInfo))
             .catch(e=>console.log(e));
@@ -146,7 +148,7 @@ window.addEventListener("load", function(){
         selectedCities.innerHTML=`<tr>
           <th>City</th>
           <th>Description</th>
-          <th>Air temperature, K</th>
+          <th>Air temperature, ℃</th>
           <th>Clouds, %</th>
           <th></th>
         </tr>`
